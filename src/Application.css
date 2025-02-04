@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+
+/**************************************************************************/
+/** Tabs
+/**************************************************************************/
+
+.app-nav-bar {
+  background-color: #636363;
+  height: 36px;
+  line-height: 36px;
+}
+
+.app-tab-container {
+  float: right;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.app-tab-container > div {
+  float: left;
+  min-width: 125px;
+  color: white;
+  text-align: center;
+  height: 100%;
+  cursor: pointer;
+}
+
+.app-tab-container > div:hover {
+  background-color: #50535f;
+}
+
+.app-tab-container > div.active,
+.app-tab-container > div.active:hover {
+  background-color: #50535f;
+}
+
+
