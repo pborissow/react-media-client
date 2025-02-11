@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import {Button, Switch, FormControlLabel } from '@mui/material';
+
+
 import { ThumbnailView } from "./ThumbnailView";
 import useFilter from "../utils/Retriever";
-//import './Explorer.css';
+import './Explorer.css';
+
 
 //******************************************************************************
 //**  Explorer
@@ -17,22 +21,70 @@ function Explorer() {
 
 
   //**************************************************************************
-  //** updateFilter
-  //**************************************************************************   
-    function updateFilter(){
-        if (!filter.path || !filter.path.length) return;
-        filter.path.pop();                                              
-        setFilter(JSON.parse(JSON.stringify(filter)));
-    }
+  //** moveBack
+  //**************************************************************************
+    function moveBack(){
 
-    
+        var showAll = filter.recursive===true;
+        if (showAll){
+            delete filter.recursive;
+        }
+
+
+        if (!filter.path || !filter.path.length===0){
+            //title.clear();
+            if (showAll) updateFilter();
+        }
+        else{
+            filter.path.pop();
+            //title.update();
+            updateFilter();
+        }
+
+    };
+
+
+  //**************************************************************************
+  //** updateFilter
+  //**************************************************************************
+    function updateFilter(){
+        setFilter(JSON.parse(JSON.stringify(filter)));
+    };
+
+
+
+  //**************************************************************************
+  //** Title
+  //**************************************************************************
+  function Title(){
+    return (
+      <div className="title">
+
+      </div>
+    )
+  };
+
+
   //**************************************************************************
   //** Toolbar
-  //**************************************************************************  
-    function Toolbar(){      
+  //**************************************************************************
+    function Toolbar(){
       return (
-        <div className="toolbar">
-          <button onClick={updateFilter}>Back</button> 
+        <div className="panel-toolbar">
+          <Button onClick={moveBack} variant="outlined" className="toolbar-button back">Up</Button>
+
+          <div style={{float:"right", margin: "0 20px 0"}}>
+            <FormControlLabel labelPlacement="start"
+                control={
+                    <Switch checked={filter.recursive} label="Show All" onChange={(e)=>{
+                        filter.recursive = e.target.checked;
+                        updateFilter();
+                    }} />
+                }
+                label="Show All"
+            />
+          </div>
+
         </div>
       )
     };
@@ -40,10 +92,11 @@ function Explorer() {
 
   //**************************************************************************
   //** render
-  //**************************************************************************   
+  //**************************************************************************
     return (
-      <div>
-        <Toolbar />    
+      <div className="media-explorer">
+        <Title />
+        <Toolbar />
         <ThumbnailView filter={filter} setFilter={setFilter} data={items} loading={loading} />
       </div>
     );
