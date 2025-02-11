@@ -24,5 +24,12 @@ npm i --save @fortawesome/free-regular-svg-icons
 npm i --save @fortawesome/free-brands-svg-icons
 ```
 
+### Material UI
+```
+npm install @mui/material @emotion/react @emotion/styled
+npm install @fontsource/roboto
+npm install @mui/icons-material
+```
+
 ### Misc
 This app was created using `create-react-app` which installed over 800 different packages. I have no idea which ones are actually used to run this app.
