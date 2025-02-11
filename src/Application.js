@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
 import Explorer from "./views/Explorer";
 import AdminPanel from "./admin/AdminPanel";
 import './Application.css';
+
 
 //******************************************************************************
 //**  Main Application
@@ -15,6 +19,21 @@ export const Application = function() {
 
     const tabs = new Map();
     var currTab = "Home";
+    const darkTheme = createTheme({
+      palette: {
+        mode: 'dark',
+      },
+      typography: { //delete global font styles inserted into the body
+        allVariants: {
+          color: null,
+          fontSize: null,
+          fontFamily: null,
+          fontWeight: null,
+          lineHeight: null,
+          letterSpacing: null
+        },
+      },
+    });
 
 
   //**************************************************************************
@@ -22,7 +41,7 @@ export const Application = function() {
   //**************************************************************************
     function Header(){
       return (
-        <div className="header"></div>
+        <div className="app-header"></div>
       )
     };
 
@@ -54,7 +73,6 @@ export const Application = function() {
 
         useEffect(() => {
             const div = divRef.current;
-            console.log(div);
             tabs.set(props.tabName, div);
         }, []);
 
@@ -94,11 +112,18 @@ export const Application = function() {
   //** render
   //**************************************************************************
     return (
-      <div>
-        <Header/>
-        <Tabbar/>
-        <Panel tabName="Home"><Explorer/></Panel>
-        <Panel tabName="Admin"><AdminPanel/></Panel>
-      </div>
+
+      <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+        <div className='app'>
+          <Header/>
+          <Tabbar/>
+          <div className='app-body'>
+            <Panel tabName="Home"><Explorer/></Panel>
+            <Panel tabName="Admin"><AdminPanel/></Panel>
+          </div>
+        </div>
+      </ThemeProvider>
+
     );
 }
