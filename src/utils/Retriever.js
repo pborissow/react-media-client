@@ -4,60 +4,144 @@ import { useState, useEffect } from 'react';
 //**  Retriever
 //******************************************************************************
 /**
- *   React hook used to fetch media items and folders from the server.
+ *   Class used to fetch media items and folders from the server.
  *
  ******************************************************************************/
 
-function useFilter(filter) {
-    const [result, setResult] = useState([]);
-    const [loading, setLoading] = useState("false");
-  
-    useEffect(() => {
-        async function fetchItems() {
-            try {
-                setLoading("true");
+export default class Retriever {
+
+    isFetching = false;
+    config = {
+        limit: 50
+    };
+
+    eof = false;
+    currPage = 0;
 
 
-                var path = "";
-                var params = {};
-                for (var key in filter) {
-                    if (filter.hasOwnProperty(key)){
-        
-                        if (key=="path"){
-                            for (var i=0; i<filter.path.length; i++){
-                                path += "/" + encodeURIComponent(filter.path[i]);
-                            }
-                        }
-                        else{
-                            params[key] = filter[key];
+  //**************************************************************************
+  //** Constructor
+  //**************************************************************************
+    constructor() {
+        //console.log(new Date());
+    }
+
+
+    clear(){
+
+        this.currPage = 0;
+        this.eof = false;
+    }
+
+    setFilter(filter){
+        this.clear();
+        this.filter = filter;
+
+
+
+
+        //console.log(this.filter);
+    }
+
+
+  //**************************************************************************
+  //** fetch
+  //**************************************************************************
+    async fetch(callback) {
+
+        if (this.eof){
+            callback.apply(this, [[]]);
+            return;
+        }
+
+
+        var page = this.currPage+1;
+        //if (pageRequests.has(page)) return;
+        if (this.isFetching) return;
+        this.isFetching = true;
+
+        this.currPage++;
+
+
+
+        try {
+
+            var path = "";
+            var params = {};
+            for (var key in this.filter) {
+                if (this.filter.hasOwnProperty(key)){
+
+                    if (key=="path"){
+                        for (var i=0; i<this.filter.path.length; i++){
+                            path += "/" + encodeURIComponent(this.filter.path[i]);
                         }
                     }
+                    else if (key=="page"){
+
+                    }
+                    else{
+                        params[key] = this.filter[key];
+                    }
                 }
-
-                const response = await fetch('/index' + path, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(params)
-                });
-    
-                const json = await response.json();
-                setResult(json);
-
-            } 
-            catch (error) {
-                setLoading("null");
             }
+
+            var limit = this.config.limit;
+
+            const response = await fetch('/index' + path + "?page=" + page + "&limit=" + limit, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            });
+
+            const items = await response.json();
+            items.forEach((item)=>{
+                item.isFolder = item.hash==="-";
+            });
+
+
+            if (items.length<limit) this.eof = true;
+            this.isFetching = false;
+
+            callback.apply(this, [items]);
+
         }
-  
+        catch (error) {
+            this.isFetching = false;
+        }
+    }
+
+
+  //**************************************************************************
+  //** isEOF
+  //**************************************************************************
+    isEOF (){
+        return this.eof;
+    };
+
+}
+
+
+//React hook used to fetch media items and folders from the server.
+
+function useFilter(filter, retriever) {
+    const [result, setResult] = useState([]);
+
+    useEffect(() => {
+
         if (filter) {
-            fetchItems();
+            retriever.setFilter(filter);
+            retriever.fetch((json)=>{
+                setResult(json);
+            });
         }
+
     }, [filter]);
-  
-    return [result, loading];
+
+    return [result];
 };
 
-export default useFilter;
+
+export {useFilter};
