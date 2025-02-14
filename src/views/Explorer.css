@@ -47,3 +47,21 @@
     }
 
 }
+
+
+/* Flex-related style updates */
+
+div.media-explorer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+div.media-explorer > div {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+div.media-explorer > div.thumbnail-view {
+    flex-shrink: unset;
+}
