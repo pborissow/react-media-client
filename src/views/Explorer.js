@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import {Button, Switch, FormControlLabel } from '@mui/material';
 
-
 import { ThumbnailView } from "./ThumbnailView";
-import useFilter from "../utils/Retriever";
 import './Explorer.css';
 
 
@@ -17,7 +15,6 @@ import './Explorer.css';
 
 function Explorer() {
     const [filter, setFilter] = useState({});
-    const [items, loading] = useFilter(filter);
 
 
   //**************************************************************************
@@ -52,17 +49,16 @@ function Explorer() {
     };
 
 
-
   //**************************************************************************
   //** Title
   //**************************************************************************
-  function Title(){
-    return (
-      <div className="title">
+    function Title(){
+        return (
+        <div className="title">
 
-      </div>
-    )
-  };
+        </div>
+        )
+    };
 
 
   //**************************************************************************
@@ -97,7 +93,7 @@ function Explorer() {
       <div className="media-explorer">
         <Title />
         <Toolbar />
-        <ThumbnailView filter={filter} setFilter={setFilter} data={items} loading={loading} />
+        <ThumbnailView filter={filter} setFilter={setFilter} />
       </div>
     );
 }
